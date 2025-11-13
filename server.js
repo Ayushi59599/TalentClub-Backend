@@ -18,6 +18,20 @@ async function connectDB() {
   console.log("MongoDB connected successfully");
 }
 
+// Shortcut for lessons collection
+const lessons = () => db.collection("lessons");
+
+// Basic GET /lessons route
+app.get("/lessons", async (req, res) => {
+  try {
+    const allLessons = await lessons().find().toArray();
+    res.json(allLessons);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch lessons" });
+  }
+});
+
+// Testing 
 app.get("/test", (req, res) => {
   res.send("Hello World");
 });
