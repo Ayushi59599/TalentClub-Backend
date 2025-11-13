@@ -1,4 +1,3 @@
-// IMPORT DEPENDENCIES
 import express from "express";
 import cors from "cors";
 import { MongoClient, ObjectId } from "mongodb";
@@ -12,6 +11,12 @@ const MONGO_URI = "mongodb+srv://ayushi59599:Cloudnine1@cluster0.vxf4zlx.mongodb
 app.use(cors());
 app.use(express.json());
 
+// Logger middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url} at ${new Date().toISOString()}`);
+  next();
+});
+
 const __dirname = path.resolve();
 app.use("/images", express.static(path.join(__dirname, "images")));
 
@@ -21,7 +26,7 @@ async function connectDB() {
   const client = new MongoClient(MONGO_URI);
   await client.connect();
   db = client.db();
-  console.log("✅ MongoDB connected successfully");
+  console.log("MongoDB connected successfully");
 }
 
 const lessons = () => db.collection("lessons");
@@ -87,5 +92,5 @@ app.post("/orders", async (req, res) => {
 });
 
 connectDB().then(() =>
-  app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`))
+  app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`))
 );
