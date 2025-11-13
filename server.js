@@ -83,11 +83,59 @@ app.put("/lessons/:id", async (req, res) => {
 // POST /orders
 app.post("/orders", async (req, res) => {
   try {
-    const order = req.body;
-    await orders().insertOne(order);
-    res.status(201).json({ message: "Order created successfully" });
+    const { lessons: lessonIds, name, phone } = req.body;
+
+    // Validate order input
+    if (!lessonIds?.length) return res.status(400).json({ message: "Cart is empty" });
+    if (!name || !phone) return res.status(400).json({ message: "Name and phone are required" });
+
+    // Fetch lessons from DB
+    const lessonDocs = await lessons()
+      .find({ _id: { $in: lessonIds.map(id => new ObjectId(id)) } })
+      .toArray();
+
+    if (lessonDocs.length !== lessonIds.length)
+      return res.status(400).json({ message: "Some lessons not found" });
+
+    // Check available spaces
+    for (const l of lessonDocs) {
+      if (l.spaces <= 0) return res.status(400).json({ message: `No spaces left for ${l.topic}` });
+    }
+
+    // Decrease spaces for booked lessons
+    for (const l of lessonDocs) {
+      await lessons().updateOne({ _id: l._id }, { $inc: { spaces: -1 } });
+    }
+
+    // Create order document
+    const order = {
+      lessons: lessonDocs.map(l => ({ id: l._id, topic: l.topic })),
+      name,
+      phone,
+      createdAt: new Date()
+    };
+
+    const result = await orders().insertOne(order);
+    res.status(201).json({ message: "Order placed successfully", orderId: result.insertedId });
   } catch (err) {
-    res.status(500).json({ message: "Failed to create order" });
+    res.status(500).json({ message: "Failed to place order" });
+  }
+});
+
+// GET /search
+app.get("/search", async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q) return res.json([]);
+
+    const regex = new RegExp(q, "i");
+    const results = await lessons()
+      .find({ $or: [{ topic: regex }, { location: regex }] })
+      .toArray();
+
+    res.json(results.map(l => ({ ...l, _id: l._id.toString() })));
+  } catch (err) {
+    res.status(500).json({ message: "Search failed" });
   }
 });
 
