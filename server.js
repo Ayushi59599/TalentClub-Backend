@@ -1,186 +1,230 @@
-// Import dependencies
+// --- Import dependencies ---
 import express from "express";
 import cors from "cors";
 import { MongoClient, ObjectId } from "mongodb";
 import path from "path";
+import dotenv from "dotenv"
 
+// --- Setup ---
 const app = express();
 const PORT = 8000;
 
-const MONGO_URI = "mongodb+srv://ayushi59599:Cloudnine1@cluster0.vxf4zlx.mongodb.net/talentClub?retryWrites=true&w=majority";
+// [Requirement: MongoDB to my Atlas Cluster]
+dotenv.config(); 
+const MONGO_URI = process.env.MONGO_URI;
 
-// Middleware setup
-app.use(cors());            
-app.use(express.json());    
+// --- Middleware ---
+// Enables the frontend to talk to this backend 
+app.use(cors());
+app.use(express.json());
 
-// Logger: prints request info (method + URL + time)
+// [Requirement: Logger Middleware] 
+// Prints the Request Method (GET/POST/PUT/DELETE) and URL to the console for debugging
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url} at ${new Date().toISOString()}`);
+  console.log(`[LOG] ${req.method} ${req.url} - ${new Date().toISOString()}`);
   next();
 });
 
-// Static images 
+// --- Static images ---
 const __dirname = path.resolve();
+// [Requirement: Static File Server] 
+// Serves image files from the "images" folder to the frontend
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-let db; 
+// Middleware to catch missing images if static file isn't found
+app.use("/images", (req, res, next) => {
+  res.status(404).json({ message: "Image not found" });
+});
 
-// Connect to mongodb
+// --- Connect to MongoDB ---
+let db;
 async function connectDB() {
-  const client = new MongoClient(MONGO_URI);
-  await client.connect();
-  db = client.db();
-  console.log("MongoDB connected successfully");
+  try {
+    const client = new MongoClient(MONGO_URI);
+    await client.connect();
+    db = client.db();
+    console.log("Connected to MongoDB");
+  } catch (err) {
+    console.error("MongoDB Connection Error:", err);
+  }
 }
-// Collections
-const lessons = () => db.collection("lessons");
-const orders = () => db.collection("orders");
 
+// Collections shortcut
+const Lessons = () => db.collection("lessons");
+const Orders = () => db.collection("orders");
 
+// ----------------------------
+//        LESSON ROUTES
+// ----------------------------
 
-// LESSON ROUTES
-
-
-// Get all lessons
+// [Requirement: GET Route] Fetch all lessons
 app.get("/lessons", async (req, res) => {
   try {
-    const allLessons = await lessons().find().toArray();
-
-    const formatted = allLessons.map(l => ({
-      _id: l._id.toString(),
-      topic: l.topic,
-      location: l.location,
-      price: l.price,
-      spaces: l.spaces ?? 5, // default 5 spaces if undefined
-      image: l.image ? `http://localhost:${PORT}/images/${l.image}` : undefined
-    }));
-
-    res.json(formatted);
+    const lessonsList = await Lessons().find().toArray();
+    res.json(
+      lessonsList.map(l => ({
+        ...l,
+        _id: l._id.toString(),
+        spaces: l.spaces ?? 5,
+        image: l.image ? `http://localhost:${PORT}/images/${l.image}` : null
+      }))
+    );
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to fetch lessons" });
+    res.status(500).json({ message: "Error fetching lessons" });
   }
 });
 
-// Add a new lesson
+// Add a lesson (Admin helper)
 app.post("/lessons", async (req, res) => {
-  try {
-    const { topic, location, price, spaces = 5, image } = req.body;
+  const { topic, location, price, spaces = 5, image } = req.body;
+  if (!topic || !location || price == null)
+    return res.status(400).json({ message: "Missing fields" });
 
-    // Validate required fields
-    if (!topic || !location || price === undefined)
-      return res.status(400).json({ message: "Missing required fields" });
-
-    // Insert new lesson into DB
-    const result = await lessons().insertOne({ topic, location, price, spaces, image });
-    res.json({ message: "Lesson added successfully", id: result.insertedId });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to add lesson" });
-  }
+  const result = await Lessons().insertOne({ topic, location, price, spaces, image });
+  res.json({ message: "Lesson added", id: result.insertedId });
 });
 
-// Update a lesson by ID
+// [Requirement: PUT Route] Update lesson spaces
 app.put("/lessons/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const updates = req.body;
-
-    // Save new lesson to MongoDB
-    const result = await lessons().updateOne(
-      { _id: new ObjectId(id) },
-      { $set: updates }
+    // Updates specific fields (like spaces) for the lesson ID provided
+    const result = await Lessons().updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: req.body }
     );
 
     if (!result.modifiedCount)
-      return res.status(404).json({ message: "Lesson not found" });
+      return res.status(404).json({ message: "Lesson not found or no change" });
 
-    res.json({ message: "Lesson updated successfully" });
+    res.json({ message: "Lesson updated" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to update lesson" });
+    res.status(500).json({ message: "Error updating lesson" });
   }
 });
 
 
+// ----------------------------
+//        ORDER ROUTES
+// ----------------------------
 
-// ORDER ROUTES
-
-
-// Place a new order
+// [Requirement: POST Route] Place an order and handle User Creation
 app.post("/orders", async (req, res) => {
+  const { lessons, name, phone, password } = req.body;
+
+  // Validation
+  if (!lessons || !name || !phone || !password) {
+    return res.status(400).json({ message: "Missing info or empty cart" });
+  }
+
   try {
-    const { lessons: lessonIds, name, phone } = req.body;
+    // Check if user exists based on phone number
+    const user = await Orders().findOne({ phone });
 
-    // Validate order data
-    if (!lessonIds?.length)
-      return res.status(400).json({ message: "Cart is empty" });
-    if (!name || !phone)
-      return res.status(400).json({ message: "Name and phone are required" });
-
-    // Fetch all selected lessons
-    const lessonDocs = await lessons()
-      .find({ _id: { $in: lessonIds.map(id => new ObjectId(id)) } })
-      .toArray();
-
-    // Ensure all lesson IDs exist
-    if (lessonDocs.length !== lessonIds.length)
-      return res.status(400).json({ message: "Some lessons not found" });
-
-    // Check available spaces
-    for (const l of lessonDocs) {
-      if (l.spaces <= 0)
-        return res.status(400).json({ message: `No spaces left for ${l.topic}` });
-    }
-
-    // Decrease space count for each booked lesson
-    for (const l of lessonDocs) {
-      await lessons().updateOne({ _id: l._id }, { $inc: { spaces: -1 } });
-    }
-
-    // Create and insert order record in MongoDB
-    const order = {
-      lessons: lessonDocs.map(l => ({ id: l._id, topic: l.topic })),
-      name,
-      phone,
+    // Create order object
+    const newOrder = {
+      lessons: lessons, 
       createdAt: new Date()
     };
-    const result = await orders().insertOne(order);
-    res.json({
-      message: "Order placed successfully",
-      orderId: result.insertedId
-    });
+
+    if (user) {
+      // User exists: verify password matches
+      if (user.password !== password || user.name !== name) {
+        return res.status(400).json({
+          message: "Account exists. Invalid name or password."
+        });
+      }
+      
+      // Add new order to their history array
+      await Orders().updateOne(
+        { phone },
+        { $push: { orders: newOrder } }
+      );
+      return res.json({ message: "Order added", userId: user._id });
+
+    } else {
+      // New user: create a new document
+      const result = await Orders().insertOne({
+        name,
+        phone,
+        password,
+        orders: [newOrder]
+      });
+      return res.json({ message: "User created & order placed", userId: result.insertedId });
+    }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to place order" });
+    res.status(500).json({ message: "Order failed" });
   }
 });
 
-
-
-// SEARCH ROUTE
-
-// Search lessons by topic or location
-app.get("/search", async (req, res) => {
+// Get all orders (for the User Dashboard)
+app.get("/orders", async (req, res) => {
   try {
-    const { q } = req.query;
-    if (!q) return res.json([]); // Return empty if no search term
+    const usersList = await Orders().find().toArray();
 
-    const regex = new RegExp(q, "i"); // Case-insensitive regex
-    const results = await lessons()
-      .find({ $or: [{ topic: regex }, { location: regex }] })
-      .toArray();
+    // Format IDs for frontend usage
+    const formattedUsers = usersList.map(user => ({
+      ...user,
+      _id: user._id.toString(),
+      orders: user.orders.map(order => ({
+        ...order,
+        lessons: Array.isArray(order.lessons) 
+          ? order.lessons.map(l => (typeof l === 'object' && l.id) ? { ...l, id: l.id.toString() } : l)
+          : order.lessons
+      }))
+    }));
 
-    res.json(results.map(l => ({ ...l, _id: l._id.toString() })));
+    res.json(formattedUsers);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Search failed" });
+    res.status(500).json({ message: "Error fetching orders" });
   }
 });
 
-// Start server after DB connection
-connectDB().then(() =>
-  app.listen(PORT, () =>
-    console.log(`Server running at http://localhost:${PORT}`)
-  )
-);
+
+// ----------------------------
+//        SEARCH ROUTE
+// ----------------------------
+
+// [Requirement: Search] Backend Search (Approach 2)
+app.get("/search", async (req, res) => {
+  const q = req.query.q;
+  if (!q) return res.json([]);
+  
+  // Create a case-insensitive Regex
+  const regex = new RegExp(q, "i");
+
+  // Uses MongoDB Aggregation to search across multiple fields at once
+  const results = await Lessons().aggregate([
+    {
+      // Convert numbers (price/spaces) to strings so Regex works on them
+      $addFields: {
+        priceStr: { $toString: "$price" },
+        spacesStr: { $toString: "$spaces" }
+      }
+    },
+    {
+      // [Requirement] Match Query in Topic OR Location OR Price OR Spaces
+      $match: {
+        $or: [
+          { topic: regex },
+          { location: regex },
+          { priceStr: regex },
+          { spacesStr: regex }
+        ]
+      }
+    }
+  ]).toArray();
+
+  res.json(results.map(l => ({ 
+    ...l, 
+    _id: l._id.toString(),
+    image: l.image ? `http://localhost:8000/images/${l.image}` : null 
+  })));
+});
+ 
+// ----------------------------
+//      START SERVER
+// ----------------------------
+connectDB().then(() => {
+  app.listen(PORT, () => console.log(`🚀 Server running on ${PORT}`));
+});
