@@ -66,7 +66,7 @@ app.get("/lessons", async (req, res) => {
         ...l,
         _id: l._id.toString(),
         spaces: l.spaces ?? 5,
-        image: l.image ? `http://localhost:${PORT}/images/${l.image}` : null
+        image: l.image ? `https://talentclub-backend.onrender.com/images/${l.image}` : null
       }))
     );
   } catch (err) {
@@ -218,7 +218,7 @@ app.get("/search", async (req, res) => {
   res.json(results.map(l => ({ 
     ...l, 
     _id: l._id.toString(),
-    image: l.image ? `http://localhost:8000/images/${l.image}` : null 
+    image: l.image ? `https://talentclub-backend.onrender.com/images/${l.image}` : null 
   })));
 });
  
