@@ -9,7 +9,7 @@ import dotenv from "dotenv"
 const app = express();
 const PORT = 8000;
 
-// [Requirement: MongoDB to my Atlas Cluster]
+// [Requirement: MongoDB Connection]
 dotenv.config(); 
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -19,7 +19,6 @@ app.use(cors());
 app.use(express.json());
 
 // [Requirement: Logger Middleware] 
-// Prints the Request Method (GET/POST/PUT/DELETE) and URL to the console for debugging
 app.use((req, res, next) => {
   console.log(`[LOG] ${req.method} ${req.url} - ${new Date().toISOString()}`);
   next();
@@ -74,7 +73,7 @@ app.get("/lessons", async (req, res) => {
   }
 });
 
-// Add a lesson (Admin helper)
+// Add a lesson 
 app.post("/lessons", async (req, res) => {
   const { topic, location, price, spaces = 5, image } = req.body;
   if (!topic || !location || price == null)
@@ -107,56 +106,79 @@ app.put("/lessons/:id", async (req, res) => {
 //        ORDER ROUTES
 // ----------------------------
 
-// [Requirement: POST Route] Place an order and handle User Creation
+// [Requirement: POST Route] 
 app.post("/orders", async (req, res) => {
   const { lessons, name, phone, password } = req.body;
 
-  // Validation
+  // Basic check to make sure we have data
   if (!lessons || !name || !phone || !password) {
-    return res.status(400).json({ message: "Missing info or empty cart" });
+    return res.status(400).json({ message: "All fields (name, phone, password) are required." });
   }
 
   try {
-    // Check if user exists based on phone number
+    //Check if the Phone Number exists
     const user = await Orders().findOne({ phone });
 
-    // Create order object
+    // Create the order object to save
     const newOrder = {
       lessons: lessons, 
       createdAt: new Date()
     };
 
     if (user) {
-      // User exists: verify password matches
-      if (user.password !== password || user.name !== name) {
-        return res.status(400).json({
-          message: "Account exists. Invalid name or password."
+      // ACCOUNT EXISTS (Phone Match)
+      // We must check if the Name and Password match the existing account.
+      
+      const dbName = user.name.toLowerCase();
+      const inputName = name.toLowerCase();
+      
+      const isNameWrong = dbName !== inputName;
+      const isPasswordWrong = user.password !== password;
+
+      // ERROR MESSAGES:
+      if (isNameWrong && isPasswordWrong) {
+        return res.status(400).json({ 
+          message: "Account exists with this phone number, but both Name and Password are wrong." 
         });
       }
       
-      // Add new order to their history array
+      if (isNameWrong) {
+        return res.status(400).json({ 
+          message: `Account exists with this phone number, but the Name '${name}' is wrong.` 
+        });
+      }
+
+      if (isPasswordWrong) {
+        return res.status(400).json({ 
+          message: "Account exists with this phone number, but the Password is wrong." 
+        });
+      }
+      
+      //Update the user.
       await Orders().updateOne(
         { phone },
         { $push: { orders: newOrder } }
       );
-      return res.json({ message: "Order added", userId: user._id });
+      return res.json({ message: "Order added to existing account", userId: user._id });
 
     } else {
-      // New user: create a new document
+      //NEW ACCOUNT (New Phone number)
+      // Create a brand new user document
       const result = await Orders().insertOne({
         name,
         phone,
         password,
         orders: [newOrder]
       });
-      return res.json({ message: "User created & order placed", userId: result.insertedId });
+      return res.json({ message: "New user created & order placed", userId: result.insertedId });
     }
   } catch (err) {
-    res.status(500).json({ message: "Order failed" });
+    console.error(err);
+    res.status(500).json({ message: "Order failed due to server error." });
   }
 });
 
-// Get all orders (for the User Dashboard)
+// Get all orders 
 app.get("/orders", async (req, res) => {
   try {
     const usersList = await Orders().find().toArray();
@@ -185,7 +207,7 @@ app.get("/orders", async (req, res) => {
 //        SEARCH ROUTE
 // ----------------------------
 
-// [Requirement: Search] Backend Search (Approach 2)
+// [Requirement: Backend Search] 
 app.get("/search", async (req, res) => {
   const q = req.query.q;
   if (!q) return res.json([]);
@@ -193,10 +215,10 @@ app.get("/search", async (req, res) => {
   // Create a case-insensitive Regex
   const regex = new RegExp(q, "i");
 
-  // Uses MongoDB Aggregation to search across multiple fields at once
+  // MongoDB Aggregation to search across multiple fields at once
   const results = await Lessons().aggregate([
     {
-      // Convert numbers (price/spaces) to strings so Regex works on them
+      // Convert price/spaces to strings
       $addFields: {
         priceStr: { $toString: "$price" },
         spacesStr: { $toString: "$spaces" }
