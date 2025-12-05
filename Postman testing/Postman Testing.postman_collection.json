@@ -1,0 +1,495 @@
+{
+	"info": {
+		"_postman_id": "da502f66-16f1-41a7-9ecf-f29026a6ae32",
+		"name": "Postman Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39830041",
+		"_collection_link": "https://talentclub.postman.co/workspace/1cc53d1e-acef-4763-b74c-920a3b58dc68/collection/39830041-da502f66-16f1-41a7-9ecf-f29026a6ae32?action=share&source=collection_link&creator=39830041"
+	},
+	"item": [
+		{
+			"name": "Get Orders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://talentclub-backend.onrender.com/orders",
+					"protocol": "https",
+					"host": [
+						"talentclub-backend",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://talentclub-backend.onrender.com/orders",
+							"protocol": "https",
+							"host": [
+								"talentclub-backend",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 05 Dec 2025 14:36:29 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "515"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "9a9446ab7f6d56ce-IAD"
+						},
+						{
+							"key": "access-control-allow-origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"734-1XJrLdsHHC+8gMl+kqBTAo0hm1E\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "1dfa4bf0-4cf2-468d"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"_id\": \"6932c45cdc4e0a4064c93dde\",\n        \"name\": \"Iron man\",\n        \"phone\": \"999\",\n        \"password\": \"im9\",\n        \"orders\": [\n            {\n                \"lessons\": [\n                    {\n                        \"id\": \"68ffabf769ad781cfad7f6a4\",\n                        \"topic\": \"Astronomy\",\n                        \"location\": \"Manchester\",\n                        \"price\": 40,\n                        \"image\": \"https://talentclub-backend.onrender.com/images/astronomy.jpg\"\n                    },\n                    {\n                        \"id\": \"68ffabf769ad781cfad7f69c\",\n                        \"topic\": \"Physics\",\n                        \"location\": \"London Campus\",\n                        \"price\": 50,\n                        \"image\": \"https://talentclub-backend.onrender.com/images/physics.jpg\"\n                    }\n                ],\n                \"createdAt\": \"2025-12-05T11:39:08.017Z\"\n            },\n            {\n                \"lessons\": [\n                    {\n                        \"id\": \"68ffabf769ad781cfad7f69d\",\n                        \"topic\": \"Music\",\n                        \"price\": 55\n                    }\n                ],\n                \"createdAt\": \"2025-12-05T12:52:11.629Z\"\n            },\n            {\n                \"lessons\": [\n                    {\n                        \"_id\": \"68ffabf769ad781cfad7f69d\",\n                        \"topic\": \"Music\",\n                        \"price\": 55\n                    }\n                ],\n                \"createdAt\": \"2025-12-05T12:53:51.470Z\"\n            }\n        ]\n    },\n    {\n        \"_id\": \"6932c476dc4e0a4064c93ddf\",\n        \"name\": \"spiderman\",\n        \"phone\": \"100\",\n        \"password\": \"sm1\",\n        \"orders\": [\n            {\n                \"lessons\": [\n                    {\n                        \"id\": \"68ffabf769ad781cfad7f6a0\",\n                        \"topic\": \"Art\",\n                        \"location\": \"Online\",\n                        \"price\": 30,\n                        \"image\": \"https://talentclub-backend.onrender.com/images/art.jpg\"\n                    }\n                ],\n                \"createdAt\": \"2025-12-05T11:39:34.168Z\"\n            }\n        ]\n    },\n    {\n        \"_id\": \"6932d77d92225557ced81a03\",\n        \"name\": \"superman\",\n        \"phone\": \"99\",\n        \"password\": \"s99\",\n        \"orders\": [\n            {\n                \"lessons\": [\n                    {\n                        \"id\": \"68ffabf769ad781cfad7f6a4\",\n                        \"topic\": \"Astronomy\",\n                        \"price\": 40,\n                        \"location\": \"Manchester\"\n                    }\n                ],\n                \"createdAt\": \"2025-12-05T13:00:45.310Z\"\n            }\n        ]\n    },\n    {\n        \"_id\": \"6932d95b92225557ced81a04\",\n        \"name\": \"Test User\",\n        \"phone\": \"07777777777\",\n        \"password\": \"pass123\",\n        \"orders\": [\n            {\n                \"lessons\": [\n                    {\n                        \"id\": \"68ffabf769ad781cfad7f69d\",\n                        \"topic\": \"Music\",\n                        \"price\": 55,\n                        \"location\": \"Liverpool\"\n                    }\n                ],\n                \"createdAt\": \"2025-12-05T13:08:43.887Z\"\n            }\n        ]\n    },\n    {\n        \"_id\": \"6932dcb692225557ced81a05\",\n        \"name\": \"Wonder women\",\n        \"phone\": \"910\",\n        \"password\": \"ww9\",\n        \"orders\": [\n            {\n                \"lessons\": [\n                    {\n                        \"id\": \"68ffabf769ad781cfad7f69d\",\n                        \"topic\": \"Music\",\n                        \"price\": 55,\n                        \"location\": \"Liverpool\"\n                    }\n                ],\n                \"createdAt\": \"2025-12-05T13:23:02.980Z\"\n            },\n            {\n                \"lessons\": [\n                    {\n                        \"id\": \"68ffabf769ad781cfad7f69d\",\n                        \"topic\": \"Music\",\n                        \"price\": 55,\n                        \"location\": \"Liverpool\"\n                    }\n                ],\n                \"createdAt\": \"2025-12-05T14:23:24.476Z\"\n            }\n        ]\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Post Orders",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Wonder women\",\r\n    \"phone\": \"910\",\r\n    \"password\": \"ww9\",\r\n    \"lessons\": [\r\n        {\r\n            \"id\": \"68ffabf769ad781cfad7f69d\",\r\n            \"topic\": \"Music\",\r\n            \"price\": 55,\r\n            \"location\": \"Liverpool\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://talentclub-backend.onrender.com/orders",
+					"protocol": "https",
+					"host": [
+						"talentclub-backend",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Wonder women\",\r\n    \"phone\": \"910\",\r\n    \"password\": \"ww9\",\r\n    \"lessons\": [\r\n        {\r\n            \"id\": \"68ffabf769ad781cfad7f69d\",\r\n            \"topic\": \"Music\",\r\n            \"price\": 55,\r\n            \"location\": \"Liverpool\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://talentclub-backend.onrender.com/orders",
+							"protocol": "https",
+							"host": [
+								"talentclub-backend",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 05 Dec 2025 14:36:48 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "71"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "9a94471fbf9181a9-IAD"
+						},
+						{
+							"key": "access-control-allow-origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"51-SM+5sB61uVOENsubRgTCIL6P0Vs\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "6967a49c-5864-4bf6"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Order added to existing account\",\n    \"userId\": \"6932dcb692225557ced81a05\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Post Lessons",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"topic\": \"Robotics\",\r\n    \"location\": \"Tech Lab\",\r\n    \"price\": 120,\r\n    \"spaces\": 10,\r\n    \"image\": \"robotics.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://talentclub-backend.onrender.com/lessons",
+					"protocol": "https",
+					"host": [
+						"talentclub-backend",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"lessons"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"topic\": \"Robotics\",\r\n    \"location\": \"Tech Lab\",\r\n    \"price\": 120,\r\n    \"spaces\": 10,\r\n    \"image\": \"robotics.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://talentclub-backend.onrender.com/lessons",
+							"protocol": "https",
+							"host": [
+								"talentclub-backend",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"lessons"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 05 Dec 2025 14:36:52 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "57"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "9a9447399896822c-IAD"
+						},
+						{
+							"key": "access-control-allow-origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"3a-dlKGBPRR5/L3OJNqRUnkxs1A+3Y\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "2af9d0c9-e52a-46b6"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Lesson added\",\n    \"id\": \"6932ee0492225557ced81a08\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Put Lessons",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"spaces\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://talentclub-backend.onrender.com/lessons/68ffabf769ad781cfad7f69c",
+					"protocol": "https",
+					"host": [
+						"talentclub-backend",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"lessons",
+						"68ffabf769ad781cfad7f69c"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"spaces\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://talentclub-backend.onrender.com/lessons/68ffabf769ad781cfad7f69c",
+							"protocol": "https",
+							"host": [
+								"talentclub-backend",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"lessons",
+								"68ffabf769ad781cfad7f69c"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 05 Dec 2025 14:26:30 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "32"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "9a943808fe426fef-IAD"
+						},
+						{
+							"key": "access-control-allow-origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"1c-a9SYxc37L7R/wR04LM4441ItvP4\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "af5341e1-3aa8-406b"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Lesson updated\"\n}"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "_id": "68ffabf769ad781cfad7f6a5",
+    "topic": "Language",
+    "location": "London",
+    "price": 45,
+    "spaces": 5,
+    "image": "language.jpg"
+  },
+  {
+    "_id": "68ffabf769ad781cfad7f69e",
+    "topic": "Biology",
+    "location": "Cambridge",
+    "price": 25,
+    "spaces": 5,
+    "image": "biology.jpg"
+  },
+  {
+    "_id": "68ffabf769ad781cfad7f69c",
+    "topic": "Physics",
+    "location": "London Campus",
+    "price": 50,
+    "spaces": 4,
+    "image": "physics.jpg"
+  },
+  {
+    "_id": "68ffabf769ad781cfad7f6a2",
+    "topic": "Maths",
+    "location": "London",
+    "price": 20,
+    "spaces": 5,
+    "image": "maths.jpg"
+  },
+  {
+    "_id": "68ffabf769ad781cfad7f69d",
+    "topic": "Music",
+    "location": "Liverpool",
+    "price": 55,
+    "spaces": 3,
+    "image": "music.jpg"
+  },
+  {
+    "_id": "68ffabf769ad781cfad7f6a0",
+    "topic": "Art",
+    "location": "Online",
+    "price": 30,
+    "spaces": 4,
+    "image": "art.jpg"
+  },
+  {
+    "_id": "68ffabf769ad781cfad7f6a1",
+    "topic": "Photography",
+    "location": "Online",
+    "price": 60,
+    "spaces": 5,
+    "image": "photography.jpg"
+  },
+  {
+    "_id": "68ffabf769ad781cfad7f6a3",
+    "topic": "Chemistry",
+    "location": "Birmingham",
+    "price": 70,
+    "spaces": 5,
+    "image": "chemistry.png"
+  },
+  {
+    "_id": "68ffabf769ad781cfad7f6a4",
+    "topic": "Astronomy",
+    "location": "Manchester",
+    "price": 40,
+    "spaces": 4,
+    "image": "astronomy.jpg"
+  }
+]

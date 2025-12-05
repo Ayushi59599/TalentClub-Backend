@@ -56,7 +56,7 @@ const Orders = () => db.collection("orders");
 //        LESSON ROUTES
 // ----------------------------
 
-// [Requirement: GET Route] Fetch all lessons
+// [Requirement: GET Route] 
 app.get("/lessons", async (req, res) => {
   try {
     const lessonsList = await Lessons().find().toArray();
@@ -244,9 +244,11 @@ app.get("/search", async (req, res) => {
   })));
 });
  
-// ----------------------------
-//      START SERVER
-// ----------------------------
+app.get("/", (req, res) => {
+  res.send("TalentClub Backend is running.");
+});
+
+// --- Start Server ---
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`🚀 Server running on ${PORT}`));
+  app.listen(PORT, () => console.log(`Server running on ${PORT}`));
 });
